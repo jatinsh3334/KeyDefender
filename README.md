@@ -63,7 +63,7 @@ This detection system is divided into **two C++ files** for a better user experi
 ## Cloning the Repository  
 ```sh  
 git clone https://github.com/jatinsh3334/KeyDefender 
-cd your-repo-name  
+cd KeyDefender
 ```  
 
 ## Setting Up the Keylogger  
