@@ -16,24 +16,24 @@
 
 using namespace std;
 
-// Tracks file writes over time to detect continuous logging
+
 map<string, int> fileWriteCount;
 
-// Stores processes accessing /dev/input/eventX
+
 set<string> devInputProcesses;
 
-// System processes to ignore
+
 set<string> ignoredProcesses = {"systemd", "bash", "sshd", "cron", "init", "kthreadd", "klogd", "journald"};
 
-// Hot zones where keyloggers often store logs
+
 vector<string> hotZones = {"/var/log", "/var/tmp", "/tmp", "/dev/shm"};
 
-// Function to check if a process should be ignored
+
 bool isIgnoredProcess(const string &processName) {
     return ignoredProcesses.find(processName) != ignoredProcesses.end();
 }
 
-// Function to check if a file is in a hot zone
+
 bool isInHotZone(const string &filePath) {
     for (const auto &zone : hotZones) {
         if (filePath.find(zone) == 0) {
@@ -43,7 +43,7 @@ bool isInHotZone(const string &filePath) {
     return false;
 }
 
-// Function to detect processes accessing /dev/input/eventX
+
 void detectDevInputAccess() {
     DIR *procDir = opendir("/proc");
     if (!procDir) {
@@ -91,11 +91,11 @@ void detectDevInputAccess() {
     closedir(procDir);
 }
 
-// Function to monitor file writes
+
 void monitorFileWrites() {
     int detectionCount = 0;
     while (true) {
-        detectDevInputAccess();  // Update /dev/input/eventX access list
+        detectDevInputAccess();  
 
         DIR *procDir = opendir("/proc");
         if (!procDir) {
