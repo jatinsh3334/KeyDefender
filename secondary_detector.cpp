@@ -16,21 +16,18 @@
 
 using namespace std;
 
-// Tracks file writes over time to detect continuous logging
 map<string, int> fileWriteCount;
 
-// System processes to ignore
 set<string> ignoredProcesses = {"systemd", "bash", "sshd", "cron", "init", "kthreadd", "klogd", "journald"};
 
-// Hot zones where keyloggers often store logs
 vector<string> hotZones = {"/var/log", "/var/tmp", "/tmp", "/dev/shm"};
 
-// Function to check if a process should be ignored
+
 bool isIgnoredProcess(const string &processName) {
     return ignoredProcesses.find(processName) != ignoredProcesses.end();
 }
 
-// Function to check if a file is in a hot zone
+
 bool isInHotZone(const string &filePath) {
     for (const auto &zone : hotZones) {
         if (filePath.find(zone) == 0) {
@@ -40,7 +37,7 @@ bool isInHotZone(const string &filePath) {
     return false;
 }
 
-// Detects processes accessing /dev/input/eventX (Keystroke interception)
+
 void detectKeystrokeInterception() {
     DIR *procDir = opendir("/proc");
     if (!procDir) {
@@ -54,7 +51,7 @@ void detectKeystrokeInterception() {
     cout << "---------------------------------------------------" << endl;
 
     while ((entry = readdir(procDir)) != NULL) {
-        if (!isdigit(entry->d_name[0])) continue; // Skip non-numeric directories
+        if (!isdigit(entry->d_name[0])) continue; 
 
         string pid = entry->d_name;
         string fdPath = "/proc/" + pid + "/fd";
@@ -92,7 +89,7 @@ void detectKeystrokeInterception() {
     closedir(procDir);
 }
 
-// Detects processes frequently writing logs
+
 void detectSuspiciousLogWriters() {
     DIR *procDir = opendir("/proc");
     if (!procDir) {
@@ -138,7 +135,7 @@ void detectSuspiciousLogWriters() {
                 fileWriteCount[filePath]++;
                 if (fileWriteCount[filePath] > 3) {
                     if (isInHotZone(filePath)) {
-                        cout << "\033[1;31m"; // Red for hot zones
+                        cout << "\033[1;31m"; 
                     }
                     cout << left << setw(20) << processName << setw(10) << pid << filePath << "\033[0m" << endl;
                 }
